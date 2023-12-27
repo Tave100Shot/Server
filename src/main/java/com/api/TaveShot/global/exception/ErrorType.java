@@ -50,10 +50,19 @@ public enum ErrorType {
     _UNAUTHORIZED(UNAUTHORIZED, "USER_4010", "로그인되지 않은 상태입니다."),
     _USER_NOT_FOUND_DB(NOT_FOUND, "USER_4041", "존재하지 않는 회원입니다."),
 
+    // ------------------------------------------ Web Client ------------------------------------------
+    _WEB_CLIENT_ERROR(INTERNAL_SERVER_ERROR, "WEBCLIENT_5001", "WebClient 요청 중 오류가 발생했습니다. 이는 서버 측의 문제일 수도 있고, 네트워크 문제 또는 요청의 잘못된 형식 등 다른 이유일 수 있습니다."),
+
+
+    // ------------------------------------------ Solved API ------------------------------------------
+    _SOLVED_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "SOLVED_5001", "Solved API 서버에서 내부 오류가 발생했습니다. 이는 서버 측의 문제로, 일시적인 오류일 수 있으므로 잠시 후 다시 시도해 보시기 바랍니다."),
+    _SOLVED_INVALID_REQUEST(BAD_REQUEST, "SOLVED_4001", "잘못된 요청입니다. 전송된 요청의 형식, 값, 파라미터 등이 Solved API의 요구 사항을 충족하지 못했습니다."),
+    _SOLVED_NOT_FOUND(NOT_FOUND, "SOLVED_4041", "Solved API에서 해당 사용자를 찾을 수 없습니다. 사용자 식별자가 잘못되었거나 존재하지 않는 사용자를 참조한 경우 발생합니다."),
+
 
     // ------------------------------------------ GITHUB API ------------------------------------------
-    _GITHUB_REPO_INVALID(BAD_REQUEST, "GITHUB_4040", "Github 인증 Repository description이 잘못되었습니다."),
-    _GITHUB_NAME_NOT_MATCH(BAD_REQUEST, "GITHUB_4041", "solvedApi 자기소개에 저장된 Github 이름과 ")
+    _GITHUB_REPO_INVALID(BAD_REQUEST, "GITHUB_4000", "Github 인증 Repository description이 잘못되었습니다."),
+    _GITHUB_NAME_NOT_MATCH(BAD_REQUEST, "GITHUB_4001", "solvedApi 자기소개에 저장된 Github 이름과 본인 GitHubId와 다릅니다.")
 
 
     ;
