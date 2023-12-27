@@ -61,8 +61,12 @@ public enum ErrorType {
 
 
     // ------------------------------------------ GITHUB API ------------------------------------------
-    _GITHUB_REPO_INVALID(BAD_REQUEST, "GITHUB_4000", "Github 인증 Repository description이 잘못되었습니다."),
-    _GITHUB_NAME_NOT_MATCH(BAD_REQUEST, "GITHUB_4001", "solvedApi 자기소개에 저장된 Github 이름과 본인 GitHubId와 다릅니다.")
+    _GITHUB_NAME_NOT_MATCH(BAD_REQUEST, "GITHUB_4000", "solvedApi 자기소개에 저장된 Github 이름과 본인 GitHubId와 다릅니다."),
+    _GITHUB_REPO_INVALID(BAD_REQUEST, "GITHUB_4001", "Github 인증 Repository description이 잘못되었습니다."),
+    _GITHUB_REPO_NOT_FOUND(NOT_FOUND, "GITHUB_4040", "요청한 GitHub 리포지토리를 찾을 수 없습니다."),
+    _GITHUB_DESCRIPTION_NOT_FOUND(NOT_FOUND, "GITHUB_4041", "GitHub 리포지토리의 설명을 찾을 수 없습니다."),
+    _GITHUB_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GITHUB_5000", "GitHub API 서버에서 오류가 발생했습니다."),
+    _GITHUB_API_ERROR(INTERNAL_SERVER_ERROR, "GITHUB_5001", "GitHub API 요청 중 일반 오류가 발생했습니다.");
 
 
     ;
