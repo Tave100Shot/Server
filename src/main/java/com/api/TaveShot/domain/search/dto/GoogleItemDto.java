@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,7 @@ public class GoogleItemDto {
 
     @JsonProperty(value = "snippet")
     private String snippet;
+
+    @JsonProperty(value = "metatags")
+    private List<GoogleMetatagsResponseDto> metatags;
 }
