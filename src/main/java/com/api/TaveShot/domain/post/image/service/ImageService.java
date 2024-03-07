@@ -15,10 +15,7 @@ public class ImageService {
 
     @Transactional
     public void register(final Post post, final String imageUrl) {
-        Image image = Image.builder()
-                .post(post)
-                .imageUrl(imageUrl)
-                .build();
+        Image image = Image.of(post, imageUrl);
         imageRepository.save(image);
     }
 

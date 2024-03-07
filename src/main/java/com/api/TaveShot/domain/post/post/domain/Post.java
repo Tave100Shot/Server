@@ -3,6 +3,7 @@ package com.api.TaveShot.domain.post.post.domain;
 import com.api.TaveShot.domain.Member.domain.Member;
 import com.api.TaveShot.domain.post.comment.domain.Comment;
 import com.api.TaveShot.domain.post.image.domain.Image;
+import com.api.TaveShot.domain.post.post.dto.request.PostCreateRequest;
 import com.api.TaveShot.domain.post.post.editor.PostEditor;
 import com.api.TaveShot.domain.base.BaseEntity;
 import com.api.TaveShot.domain.post.post.editor.PostEditor.PostEditorBuilder;
@@ -27,7 +28,7 @@ import lombok.*;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
 @Entity
@@ -64,6 +65,16 @@ public class Post extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    public static Post of(final PostCreateRequest req, final Member member) {
+        return Post.builder()
+                .title(req.getTitle())
+                .content(req.getContent())
+                .postTier(req.getPostTier())
+                .member(member)
+                .build();
+
+    }
 
     public PostEditorBuilder toEditor() {
         return PostEditor.builder()

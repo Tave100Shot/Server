@@ -1,5 +1,7 @@
 package com.api.TaveShot.domain.post.view.domain;
 
+import com.api.TaveShot.domain.Member.domain.Member;
+import com.api.TaveShot.domain.post.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ViewHistory {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +23,13 @@ public class ViewHistory {
     private Long postId;
     private Long memberId;
     private LocalDateTime viewTime;
+
+    public static ViewHistory of(final Long postId, final Long memberId) {
+        return ViewHistory.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .viewTime(LocalDateTime.now())
+                .build();
+    }
 }
+

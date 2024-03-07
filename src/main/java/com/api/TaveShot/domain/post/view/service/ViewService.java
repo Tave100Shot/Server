@@ -1,6 +1,8 @@
 package com.api.TaveShot.domain.post.view.service;
 
 import com.api.TaveShot.domain.Member.domain.Member;
+import com.api.TaveShot.domain.post.post.domain.Post;
+import com.api.TaveShot.domain.post.post.repository.PostRepository;
 import com.api.TaveShot.domain.post.view.domain.ViewHistory;
 import com.api.TaveShot.domain.post.view.repository.ViewHistoryRepository;
 import com.api.TaveShot.global.util.SecurityUtil;
@@ -33,12 +35,7 @@ public class ViewService {
     }
 
     private void register(final Long postId, final Long memberId) {
-        ViewHistory viewHistory = ViewHistory.builder()
-                .postId(postId)
-                .memberId(memberId)
-                .viewTime(LocalDateTime.now())
-                .build();
-
+        ViewHistory viewHistory = ViewHistory.of(postId, memberId);
         viewHistoryRepository.save(viewHistory);
     }
 }

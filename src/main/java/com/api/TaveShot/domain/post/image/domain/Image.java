@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,11 @@ public class Image {
     @JoinColumn(name = "post_id")
     private Post post;
     private String imageUrl;
+
+    public static Image of(final Post post, final String imageUrl) {
+        return Image.builder()
+                .post(post)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }
