@@ -54,9 +54,14 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+
     @Builder.Default
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> child = new ArrayList<>(); // 자식 댓글들
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false; // Soft delete : 기본 값 false
 
     public CommentEditor.CommentEditorBuilder toEditor(){
         return CommentEditor.builder()
@@ -70,6 +75,10 @@ public class Comment extends BaseEntity {
     public String getCreatedTime() {
         LocalDateTime createdDate = getCreatedDate();
         return TimeUtil.formatCreatedDate(createdDate);
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
 

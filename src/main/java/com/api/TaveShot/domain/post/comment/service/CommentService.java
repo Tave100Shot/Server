@@ -139,13 +139,10 @@ public class CommentService {
     /* --------------------------------- DELETE --------------------------------- */
     @Transactional
     public void delete(final Long commentId) {
-        Member currentMember = getCurrentMember();
-        Comment comment = getComment(commentId);
-
-        validateCommentWriter(comment, currentMember);
-
-        commentRepository.delete(comment);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApiException(ErrorType._COMMENT_NOT_FOUND));
+        comment.delete();
+        commentRepository.save(comment);
     }
-
 
 }
