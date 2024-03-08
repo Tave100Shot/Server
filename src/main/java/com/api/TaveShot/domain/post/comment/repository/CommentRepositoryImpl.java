@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
     @Override
     public List<Comment> findByPostId(Long postId) {
         return jpaQueryFactory
@@ -20,7 +19,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .leftJoin(comment.child)
                 .leftJoin(comment.member, member)
                 .fetchJoin()
-                .where(comment.post.id.eq(postId))
+                .where(comment.post.id.eq(postId)
+                        .and(comment.isDeleted.isFalse()))
                 .orderBy(
                         comment.parent.id.asc().nullsFirst(),
                         comment.createdDate.asc()
