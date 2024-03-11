@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
@@ -52,18 +51,30 @@ public class CustomOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Member loginMember = memberRepository.findByGitId(Long.valueOf(id)).orElseThrow(
                 () -> new ApiException(_SERVER_USER_NOT_FOUND));
         String loginMemberId = String.valueOf(loginMember.getGitId());
-
         String token = generateToken(loginMemberId);
+        String gitLoginId = loginMember.getGitLoginId();
+
+        // 2차 인증 여부 확인
+        boolean secondAuth = getSecondAuth(loginMember.getBojName());
 
         AuthResponse authResponse = AuthResponse.builder()
                 .memberId(loginMember.getId())
                 .mail(mail)
-                .gitLoginId(loginId)
+                .gitLoginId(gitLoginId)
                 .gitProfileImageUrl(profileImageUrl)
+                .secondAuth(secondAuth)
                 .build();
 
         // ToDo 아래는 임시 데이터, front와 협의 후 수정
         registerResponse(response, authResponse, token);
+    }
+
+    private boolean getSecondAuth(final String bojName) {
+        if (bojName == null) {
+            return false;
+        }
+
+        return true;
     }
 
     private GithubUserInfo createGitHubUserInfo(final CustomOauth2User oauth2User) {
@@ -88,8 +99,8 @@ public class CustomOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         // 프론트엔드 페이지로 토큰과 함께 리다이렉트
         String frontendRedirectUrl = String.format(
-                "%s/?token=%s&memberId=%s&gitLoginId=%s&profileImgUrl=%s",
-                REDIRECT_URL, token, encodedMemberId, encodedLoginId, encodedGitProfileImageUrl
+                "%s?token=%s&memberId=%s&gitLoginId=%s&secondAuth=%s&profileImgUrl=%s",
+                REDIRECT_URL, token, encodedMemberId, encodedLoginId, authResponse.secondAuth(),encodedGitProfileImageUrl
         );
         log.info("Front! redirect url: " + REDIRECT_URL);
         response.sendRedirect(frontendRedirectUrl);
