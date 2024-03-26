@@ -82,6 +82,7 @@ public enum ErrorType {
     // ---------------------------------------- problem ---------------------------------------------------
 
     _PROBLEM_NOT_FOUND(BAD_REQUEST, "PROBLEM_4001", "존재하지 않는 문제입니다."),
+    _PROBLEM_NO_SOLUTION(BAD_REQUEST, "PROBLEM_4002", "솔루션이 존재하지 않습니다."),
 
     // ------------------------------------------ Compile ------------------------------------------
     _COMPILE_PROBLEM_NOT_FOUND(NOT_FOUND, "PROBLEM_4040", "요청한 문제 번호를 찾을 수 없습니다."),

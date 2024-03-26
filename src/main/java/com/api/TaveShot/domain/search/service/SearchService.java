@@ -4,11 +4,15 @@ import static com.api.TaveShot.global.util.NumberValidator.extractNumberFromBojS
 
 import com.api.TaveShot.domain.recommend.repository.ProblemElementRepository;
 import com.api.TaveShot.domain.search.dto.GoogleItemDto;
+import com.api.TaveShot.domain.search.dto.GoogleItemDtos;
 import com.api.TaveShot.domain.search.dto.GoogleListResponseDto;
 import com.api.TaveShot.domain.search.dto.GoogleResponseDto;
 import com.api.TaveShot.global.exception.ApiException;
 import com.api.TaveShot.global.exception.ErrorType;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +37,7 @@ public class SearchService {
     @Value("${google.secret.cx}")
     private String CX;
 
-    public GoogleListResponseDto findBlog(String query, int index) {
+    public GoogleItemDtos findBlog(String query, int index) {
 
         Long questionNumber = extractNumberFromBojString(query);
 
@@ -44,30 +48,51 @@ public class SearchService {
                 .baseUrl("https://www.googleapis.com/customsearch/v1")
                 .build();
 
-        Flux<GoogleResponseDto> dto = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("key", KEY)
-                        .queryParam("cx", CX)
-                        .queryParam("q", query)
-                        .queryParam("start", index)
-                        .build())
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(GoogleResponseDto.class);
+        List<GoogleItemDto> googleResponseDtos = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(1);
 
-        dto = dto.map(googleResponseDto -> {
-            for (GoogleItemDto googleItemDto : googleResponseDto.getItems()) {
+        for(int i=0;i<6;i++) {
+            GoogleResponseDto one = new GoogleResponseDto();
+
+            GoogleResponseDto dto = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .queryParam("key", KEY)
+                            .queryParam("cx", CX)
+                            .queryParam("q", query)
+                            .queryParam("start", index)
+                            .build())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(GoogleResponseDto.class)
+                    .block();
+
+            if(dto == null)
+                throw new ApiException(ErrorType._PROBLEM_NO_SOLUTION);
+
+            for (GoogleItemDto googleItemDto : dto.getItems()) {
                 googleItemDto.modifyBlog(googleItemDto.getLink());
+                googleResponseDtos.add(googleItemDto);
             }
-            return googleResponseDto;
-        });
 
-        List<GoogleResponseDto> googleResponseDtos = dto.collectList().block();
+            if(i==0){
+                String str = googleResponseDtos.get(0).getTitle();
+                if(!isRelated(str, String.valueOf(questionNumber)))
+                    throw new ApiException(ErrorType._PROBLEM_NO_SOLUTION);
+            }
+        }
 
-        return GoogleListResponseDto.builder()
-                .dtos(googleResponseDtos)
-                .build();
 
+        return GoogleItemDtos.builder().dtos(googleResponseDtos).build();
+
+    }
+
+    public static boolean isRelated(String str, String pattern){
+        if (str.contains(pattern)) {
+            return true;
+        } else {
+            System.out.println("false");
+            return false;
+        }
     }
 
 }
