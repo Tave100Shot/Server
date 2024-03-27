@@ -51,15 +51,16 @@ public class SearchService {
         List<GoogleItemDto> googleResponseDtos = new ArrayList<>();
         CountDownLatch latch = new CountDownLatch(1);
 
-        for(int i=0;i<6;i++) {
+        for(int i=1;i<=3;i++) {
             GoogleResponseDto one = new GoogleResponseDto();
 
+            int position = i;
             GoogleResponseDto dto = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .queryParam("key", KEY)
                             .queryParam("cx", CX)
                             .queryParam("q", query)
-                            .queryParam("start", index)
+                            .queryParam("start", position)
                             .build())
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
@@ -70,8 +71,18 @@ public class SearchService {
                 throw new ApiException(ErrorType._PROBLEM_NO_SOLUTION);
 
             for (GoogleItemDto googleItemDto : dto.getItems()) {
+                int check = 0;
                 googleItemDto.modifyBlog(googleItemDto.getLink());
-                googleResponseDtos.add(googleItemDto);
+                System.out.println(googleItemDto.getLink());
+                if(isRelated(googleItemDto.getTitle(), String.valueOf(questionNumber)))
+                    for(GoogleItemDto googleItemDto2 : googleResponseDtos){
+                        if((googleItemDto.getLink()).equals(googleItemDto2.getLink())) {
+                            check = 1;
+                            break;
+                        }
+                    }
+                if(check==0)
+                    googleResponseDtos.add(googleItemDto);
             }
 
             if(i==0){
@@ -90,9 +101,9 @@ public class SearchService {
         if (str.contains(pattern)) {
             return true;
         } else {
-            System.out.println("false");
             return false;
         }
     }
+
 
 }
