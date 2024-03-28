@@ -109,9 +109,7 @@ public class PostService {
     @Transactional
     public PostResponse getSinglePost(final Long postId) {
         Post post = getPostFetchJoin(postId);
-        PostTier postTier = post.getPostTier();
 
-        validateAuthority(postTier);
         addViewCount(post);
 
         CommentListResponse commentResponses = commentService.findComments(postId);
@@ -134,9 +132,6 @@ public class PostService {
 
     public PostListResponse searchPostPaging(final PostSearchCondition condition, final Pageable pageable) {
         Page<PostResponse> postResponses = postRepository.searchPagePost(condition, pageable);
-
-        PostTier postTier = condition.getPostTierEnum();
-        validateAuthority(postTier);
 
         PostListResponse postListResponse = PostConverter.pageToPostListResponse(postResponses);
         return postListResponse;
